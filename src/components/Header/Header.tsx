@@ -22,7 +22,11 @@ const Header = ({
   setSearchKeyword: any;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    // Retrieve the recent searches from local storage
+    const savedSearches = localStorage.getItem('recentSearches');
+    return savedSearches ? JSON.parse(savedSearches) : [];
+  });
   const [showRecentSearch, setShowRecentSearch] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null); // Ref to the search component
 
@@ -33,7 +37,7 @@ const Header = ({
     }
     setPage(1);
     setSearchKeyword(term);
-    setSearchTerm(term);  // Update the searchTerm for consistency
+    setSearchTerm(term);
     setShowRecentSearch(false);
   };
 
@@ -51,6 +55,11 @@ const Header = ({
       handleSearch(searchTerm);
     }
   };
+
+  useEffect(() => {
+    // Store the recentSearches in local storage
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+  }, [recentSearches]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
