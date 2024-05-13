@@ -32,7 +32,7 @@ const CardGrid = ({ imageData, isLoading }: { imageData: any[], isLoading: boole
                 ))}
             </Grid>
             {isLoading && <CircularProgress style={{ position: 'absolute',top: '50%', left: '50%' }} />}
-            {!imageData.length && !isLoading && <Typography>No images found.</Typography>}
+            {!imageData.length && !isLoading && <Typography>No images found. Please refresh the page!</Typography>}
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
                 <DialogTitle>Title: {selectedImage?.user.name}</DialogTitle>
                 <DialogContent>
