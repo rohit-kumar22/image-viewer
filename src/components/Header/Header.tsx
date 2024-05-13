@@ -31,6 +31,7 @@ const Header = ({
   const searchRef = useRef<HTMLDivElement>(null); // Ref to the search component
 
   const handleSearch = (term: string) => {
+
     if (!recentSearches.includes(term)) {
       const updatedSearches = [term, ...recentSearches].slice(0, 5);
       setRecentSearches(updatedSearches);
@@ -47,6 +48,7 @@ const Header = ({
   };
 
   const handleSearchSelect = (term: string) => {
+    
     handleSearch(term);
   };
 
@@ -75,7 +77,7 @@ const Header = ({
   }, [searchRef]);
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#30343b", height: "5rem" }}>
+    <AppBar position="fixed" sx={{ backgroundColor: "#30343b", height: "5rem" }} className="smallScreen">
       <Toolbar>
         <Grid container alignItems="center">
           <Grid item xs={6} md={8}>
