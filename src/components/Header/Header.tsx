@@ -14,24 +14,21 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const Header = ({
-  setPage,
-  setSearchKeyword,
-}: {
-  setPage: any;
-  setSearchKeyword: any;
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
+interface HeaderProps {
+  setPage: (page: number) => void; 
+  setSearchKeyword: (keyword: string) => void; 
+}
+
+const Header: React.FC<HeaderProps> = ({ setPage, setSearchKeyword }) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
-    // Retrieve the recent searches from local storage
     const savedSearches = localStorage.getItem('recentSearches');
     return savedSearches ? JSON.parse(savedSearches) : [];
   });
-  const [showRecentSearch, setShowRecentSearch] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null); // Ref to the search component
+  const [showRecentSearch, setShowRecentSearch] = useState<boolean>(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = (term: string) => {
-
+  const handleSearch = (term: string): void => {
     if (!recentSearches.includes(term)) {
       const updatedSearches = [term, ...recentSearches].slice(0, 5);
       setRecentSearches(updatedSearches);
@@ -42,29 +39,28 @@ const Header = ({
     setShowRecentSearch(false);
   };
 
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value);
     setShowRecentSearch(true);
   };
 
-  const handleSearchSelect = (term: string) => {
-    
+  const handleSearchSelect = (event: React.MouseEvent<HTMLDivElement>, term: string): void => {
+    event.stopPropagation();
     handleSearch(term);
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === "Enter" && searchTerm !== "") {
       handleSearch(searchTerm);
     }
   };
 
   useEffect(() => {
-    // Store the recentSearches in local storage
     localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
   }, [recentSearches]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent): void => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowRecentSearch(false);
       }
@@ -106,7 +102,7 @@ const Header = ({
                 {showRecentSearch && recentSearches.length > 0 && (
                   <List className="searchList" sx={{ top: '50px', position: 'absolute', zIndex: 1 }}>
                     {recentSearches.map((item, index) => (
-                      <ListItem button key={index} onClick={() => handleSearchSelect(item)}>
+                      <ListItem button key={index} onClick={(e) => handleSearchSelect(e,item)}>
                         <ListItemText secondary={item} />
                       </ListItem>
                     ))}
