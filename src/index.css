@@ -6,7 +6,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -15,7 +15,7 @@ code {
   background-color: #fff;
   border-radius: 20px;
   width: 300px;
-  .MuiOutlinedInput-notchedOutline{
+  .MuiOutlinedInput-notchedOutline {
     border-style: none;
     position: relative;
   }
@@ -32,11 +32,11 @@ code {
   z-index: 10; /* High enough to overlay other components but not too high */
 }
 
-.listItem{
+.listItem {
   color: #000;
 }
 
-.fixedNavbaar{
+.fixedNavbaar {
   position: fixed;
   background-color: #30343b;
   height: 5rem;
@@ -49,26 +49,31 @@ code {
     width: 180px;
     background-color: #fff;
     border-radius: 20px;
-    .MuiOutlinedInput-notchedOutline{
+    .MuiOutlinedInput-notchedOutline {
       border-style: none;
       position: relative;
     }
   }
 
-  .searchList{
+  .searchList {
     position: absolute;
-  width: 180px;
-  background-color: #fff;
-  border: 1px solid #000;
-  border-radius: 5px;
-  top: 40px;
-  left: 0;
-  z-index: 10;
+    width: 180px;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 5px;
+    top: 40px;
+    left: 0;
+    z-index: 10;
   }
-
- 
 }
 
-.smallScreen{
+.smallScreen {
   padding-top: 15px;
+}
+
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
