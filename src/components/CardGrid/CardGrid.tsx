@@ -3,31 +3,13 @@ import {
     Grid, Card, CardMedia, CircularProgress, Dialog, DialogTitle, DialogContent,
     DialogContentText, DialogActions, Button, Typography
 } from '@mui/material';
-
-// Define an interface for each image item 
-interface Image {
-    urls: {
-        small: string;
-        regular: string;
-    };
-    alt_description: string | null; 
-    description?: string;
-    user: {
-        name: string;
-    };
-}
-
-// Define the props interface
-interface CardGridProps {
-    imageData: Image[];
-    isLoading: boolean;
-}
+import {CardGridImage, CardGridProps} from '../../types/image'
 
 const CardGrid: React.FC<CardGridProps> = ({ imageData, isLoading }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+    const [selectedImage, setSelectedImage] = useState<CardGridImage | null>(null);
 
-    const handleClickOpen = (image: Image) => {
+    const handleClickOpen = (image: CardGridImage) => {
         setSelectedImage(image);
         setOpen(true);
     };
@@ -58,7 +40,7 @@ const CardGrid: React.FC<CardGridProps> = ({ imageData, isLoading }) => {
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
                 <DialogTitle>Title: {selectedImage?.user.name}</DialogTitle>
                 <DialogContent>
-                    <img src={selectedImage?.urls.regular} alt={selectedImage?.alt_description || "Image description not available"} style={{ width: '100%', height: '400px' }} />
+                    <img src={selectedImage?.urls.regular} alt={selectedImage?.alt_description || "Image description not available"} className='imagePreview'/>
                     <DialogContentText style={{ marginTop: '20px' }}>
                         {selectedImage?.description || 'No description available.'}
                     </DialogContentText>

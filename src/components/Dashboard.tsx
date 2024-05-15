@@ -1,49 +1,48 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Grid } from "@mui/material";
 import Header from "./Header/Header";
 import CardGrid from "./CardGrid/CardGrid";
-import {Image} from '../types/image'
+import { Image } from '../types/image';
+import { constructUrl, DEFAULT_TOTAL_PAGES } from '../utils/urlHelper';
 
-const Main = () => {
+const Dashboard = () => {
     const [page, setPage] = useState<number>(1);
     const [imageData, setImageData] = useState<Image[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchKeyword, setSearchKeyword] = useState<string>('');
-    const [totalPage, setTotalPage] = useState<number>(99999999);
+    const [totalPage, setTotalPage] = useState<number>(DEFAULT_TOTAL_PAGES);
     const clientId = `client_id=${process.env.REACT_APP_ACCESS_KEY}`;
-    const baseUrl = 'https://api.unsplash.com/';
 
+
+    // Data fetching function
     const fetchData = useCallback(async () => {
-        if (!isLoading && page < totalPage) {
+        if (!isLoading && page <= totalPage) {
             setIsLoading(true);
-            const url = searchKeyword 
-                ? `${baseUrl}search/photos?page=${page}&query=${encodeURIComponent(searchKeyword)}&${clientId}`
-                : `${baseUrl}photos?page=${page}&${clientId}`;
-    
+            const url = constructUrl(page, searchKeyword, clientId); // apiConstruct helper function
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Network response was not ok');
                 const newData = await response.json();
                 const dataToAdd = searchKeyword ? newData.results : newData;
-                setImageData((prev) => [...prev, ...dataToAdd]);
+                setImageData(prev => [...prev, ...dataToAdd]);
                 setPage(prev => prev + 1);
-                setTotalPage(newData?.total_pages || 99999);
+                setTotalPage(newData.total_pages || DEFAULT_TOTAL_PAGES);
             } catch (error) {
-                // Handle error (e.g., by logging or displaying a message)
+                console.error('Fetch error:', error);
             } finally {
                 setIsLoading(false);
             }
         }
-    }, [isLoading, page, searchKeyword, clientId, baseUrl, totalPage]);
-    
+    }, [page, isLoading, searchKeyword, clientId, totalPage]);
 
-    useEffect(() => {    
+    useEffect(() => {
         setImageData([]);
+        setPage(1);
         fetchData();
     }, [searchKeyword]);
 
+
+    // page scroll method
     useEffect(() => {
         const handleScroll = () => {
             if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
@@ -52,9 +51,7 @@ const Main = () => {
         };
 
         window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        return () => window.removeEventListener("scroll", handleScroll);
     }, [fetchData]);
 
     return (
@@ -69,4 +66,4 @@ const Main = () => {
     );
 };
 
-export default Main;
+export default Dashboard;

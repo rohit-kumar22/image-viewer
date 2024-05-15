@@ -1,68 +1,25 @@
-import React, { useState, useEffect, useRef, KeyboardEvent, ChangeEvent } from "react";
+import React, { useRef, useEffect } from 'react';
 import {
-  AppBar,
-  Toolbar,
-  TextField,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  FormControl,
-  InputAdornment,
-  Box,
-  Grid,
+  AppBar, Toolbar, TextField, Typography, Box, Grid, InputAdornment, List, ListItem, ListItemText
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIcon from '@mui/icons-material/Search';
+import { useRecentSearches } from '../../hooks/useRecentSearches'; // custom hook
 
 interface HeaderProps {
   setPage: (page: number) => void; 
   setSearchKeyword: (keyword: string) => void; 
 }
 
-const Header: React.FC<HeaderProps> = ({ setPage, setSearchKeyword }) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
-    const savedSearches = localStorage.getItem('recentSearches');
-    return savedSearches ? JSON.parse(savedSearches) : [];
-  });
-  const [showRecentSearch, setShowRecentSearch] = useState<boolean>(false);
+const Header: React.FC<HeaderProps> = React.memo(({ setPage, setSearchKeyword }) => {
+  // custom hook for header functionality
+  const { searchTerm, setSearchTerm, recentSearches, handleSearch, setShowList, showList } = useRecentSearches(setPage, setSearchKeyword);
+  // ref for not displaying search list is user click outside the search list
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = (term: string): void => {
-    if (!recentSearches.includes(term)) {
-      const updatedSearches = [term, ...recentSearches].slice(0, 5);
-      setRecentSearches(updatedSearches);
-    }
-    setPage(1);
-    setSearchKeyword(term);
-    setSearchTerm(term);
-    setShowRecentSearch(false);
-  };
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSearchTerm(event.target.value);
-    setShowRecentSearch(true);
-  };
-
-  const handleSearchSelect = (event: React.MouseEvent<HTMLDivElement>, term: string): void => {
-    event.stopPropagation();
-    handleSearch(term);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === "Enter" && searchTerm !== "") {
-      handleSearch(searchTerm);
-    }
-  };
-
   useEffect(() => {
-    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-  }, [recentSearches]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent): void => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowRecentSearch(false);
+        setShowList(false);
       }
     };
 
@@ -70,51 +27,49 @@ const Header: React.FC<HeaderProps> = ({ setPage, setSearchKeyword }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [searchRef]);
+  }, []);
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: "#30343b", height: "5rem" }} className="smallScreen">
+    <AppBar position="fixed" className='fixedNavbar'>
       <Toolbar>
         <Grid container alignItems="center">
           <Grid item xs={6} md={8}>
-            <Typography variant="h6">
-              My Application
-            </Typography>
+            <Typography variant="h6">Xtracap</Typography>
           </Grid>
           <Grid item xs={6} md={4}>
             <Box ref={searchRef} sx={{ position: 'relative', width: 'auto' }}>
-              <FormControl onClick={() => setShowRecentSearch(true)} className="search">
-                <TextField
-                  size="small"
-                  autoComplete="off"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  onKeyDown={handleKeyDown}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon sx={{ cursor: "pointer" }} onClick={() => handleSearch(searchTerm)} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                {showRecentSearch && recentSearches.length > 0 && (
-                  <List className="searchList" sx={{ top: '50px', position: 'absolute', zIndex: 1 }}>
-                    {recentSearches.map((item, index) => (
-                      <ListItem button key={index} onClick={(e) => handleSearchSelect(e,item)}>
-                        <ListItemText secondary={item} />
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </FormControl>
+              <TextField
+                size="small"
+                className='search'
+                autoComplete="off"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchTerm)}
+                onClick={()=> setShowList(true)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon sx={{ cursor: "pointer" }} onClick={() => handleSearch(searchTerm)} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {showList && recentSearches.length > 0 && (
+                <List className="searchList" sx={{ top: '50px', position: 'absolute', zIndex: 1 }}>
+                  {recentSearches.map((search, index) => (
+                    <ListItem button key={index} onClick={() => handleSearch(search)}>
+                      <ListItemText secondary={search} />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </Box>
           </Grid>
         </Grid>
       </Toolbar>
     </AppBar>
   );
-};
+});
 
 export default Header;

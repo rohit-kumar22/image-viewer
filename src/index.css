@@ -36,11 +36,12 @@ code {
   color: #000;
 }
 
-.fixedNavbaar {
+.fixedNavbar {
   position: fixed;
-  background-color: #30343b;
+  background-color: #30343b !important;
   height: 5rem;
   margin-bottom: 2rem;
+  padding-top: 8px;
 }
 
 @media (max-width: 630px) {
@@ -53,6 +54,12 @@ code {
       border-style: none;
       position: relative;
     }
+  }
+
+  .imagePreview{
+    width: 100%;
+    height: 250px;
+    object-fit: cover; 
   }
 
   .searchList {
@@ -76,4 +83,10 @@ code {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.imagePreview{
+  width: 100%;
+  height: 400px;
+  object-fit: cover; 
 }
