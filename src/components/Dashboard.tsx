@@ -45,6 +45,7 @@ const Dashboard = () => {
     // page scroll method
     useEffect(() => {
         const handleScroll = () => {
+            console.log(window.innerHeight, document.documentElement.scrollTop + 1, document.documentElement.scrollHeight)
             if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
                 fetchData();
             }

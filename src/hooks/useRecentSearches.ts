@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 
 export const useRecentSearches = (setPage: (page: number) => void, setSearchKeyword: (keyword: string) => void) => {
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [showList, setShowList] = useState<boolean>(false)
+    const [showList, setShowList] = useState<boolean>(false);
     const [recentSearches, setRecentSearches] = useState<string[]>(() => {
         const savedSearches = localStorage.getItem('recentSearches');
         return savedSearches ? JSON.parse(savedSearches) : [];
@@ -17,8 +17,17 @@ export const useRecentSearches = (setPage: (page: number) => void, setSearchKeyw
         setPage(1);
         setSearchKeyword(term);
         setSearchTerm(term);
-        setShowList(false)
+        setShowList(false);
     }, [setPage, setSearchKeyword, recentSearches]);
+
+    const removeSearch = useCallback((term: string): void => {
+        const updatedSearches = recentSearches.filter(search => search !== term);
+        setRecentSearches(updatedSearches);
+        localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
+        if (searchTerm === term) {
+            setSearchTerm(""); // Clear the search term if it matches the removed term
+        }
+    }, [recentSearches, searchTerm]);
 
     return {
         searchTerm,
@@ -26,6 +35,7 @@ export const useRecentSearches = (setPage: (page: number) => void, setSearchKeyw
         recentSearches,
         handleSearch,
         showList,
-        setShowList
+        setShowList,
+        removeSearch
     };
 };
