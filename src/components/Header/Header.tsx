@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = React.memo(
                         ...params.InputProps,
                         endAdornment: (
                           <InputAdornment position="end">
-                            <SearchIcon />
+                            <SearchIcon sx={{cursor: 'pointer'}} onClick={()=>handleSearch(searchTerm)}/>
                           </InputAdornment>
                         ),
                       }}
