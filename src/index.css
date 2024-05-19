@@ -47,7 +47,7 @@ code {
 @media (max-width: 630px) {
   .search {
     margin-top: 20px;
-    width: 180px;
+    width: 180px !important;
     background-color: #fff;
     border-radius: 20px;
     .MuiOutlinedInput-notchedOutline {
