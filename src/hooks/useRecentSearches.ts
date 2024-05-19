@@ -9,14 +9,15 @@ export const useRecentSearches = (setPage: (page: number) => void, setSearchKeyw
     });
 
     const handleSearch = useCallback((term: string): void => {
-        if (!recentSearches.includes(term)) {
-            const updatedSearches = [term, ...recentSearches].slice(0, 5);
+        const trimmedTerm = term.trim();
+        if (trimmedTerm && !recentSearches.includes(trimmedTerm)) {
+            const updatedSearches = [trimmedTerm, ...recentSearches].slice(0, 5);
             setRecentSearches(updatedSearches);
             localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
         }
         setPage(1);
-        setSearchKeyword(term);
-        setSearchTerm(term);
+        setSearchKeyword(trimmedTerm);
+        setSearchTerm(trimmedTerm);
         setShowList(false);
     }, [setPage, setSearchKeyword, recentSearches]);
 

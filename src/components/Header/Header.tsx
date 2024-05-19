@@ -9,8 +9,11 @@ import {
   Autocomplete,
   ListItem,
   IconButton,
+  InputAdornment,
+  Paper,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import SearchIcon from "@mui/icons-material/Search";
 import { useRecentSearches } from "../../hooks/useRecentSearches"; // custom hook
 
 interface HeaderProps {
@@ -42,10 +45,15 @@ const Header: React.FC<HeaderProps> = React.memo(
               <Box sx={{ position: "relative", width: "auto" }}>
                 <Autocomplete
                   disablePortal
+                  disableClearable
+                  freeSolo
                   id="combo-box-demo"
                   options={recentSearches}
                   getOptionLabel={(option) => option}
                   sx={{ width: 300 }}
+                  PaperComponent={(props) => (
+                    <Paper {...props} style={{ marginTop: "8px" }} />
+                  )}
                   value={searchTerm}
                   onChange={(event, newValue) => {
                     if (newValue) {
@@ -63,6 +71,14 @@ const Header: React.FC<HeaderProps> = React.memo(
                       onKeyDown={(e) =>
                         e.key === "Enter" && handleSearch(searchTerm)
                       }
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   )}
                   renderOption={(props, option) => (
